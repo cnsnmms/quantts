@@ -24,6 +24,7 @@ export class Matrix {
         this.isMatrixValid(initData);
         this._rowSize = initData.length;
         this._colSize = initData[0].length;
+        this._isSquare = this._rowSize === this._colSize;
     }
 
     // Checks whether the given array data is a valid matrix or not.
@@ -410,5 +411,59 @@ export class Matrix {
             }
         }
         return new Matrix(result);
+    }
+
+
+    
+    // /**
+    //  * Calculates the inverse of the matrix.
+    //  *
+    //  * @returns {Matrix}
+    //  * @memberof Matrix
+    //  */
+    // public inverse(): Matrix {
+    //     if (!this._isSquare) {
+    //         throw 'Matrix is not square';
+    //     }
+
+    //     return new Matrix([]);
+    // }
+
+
+    /**
+     * Calculates the determinant of the current matrix.
+     *
+     * @returns {number}
+     * @memberof Matrix
+     */
+    public determinant(): number {
+        if (!this._isSquare) {
+            throw 'Matrix must be square for calculating the determinant.';
+        }
+        return this._determinant(this._data);
+    }
+
+    private _determinant(arr: matrix): number {
+        let det = 0;
+        if (arr.length == 2) {
+            det = arr[0][0] * arr[1][1] - arr[0][1] * arr[1][0];
+            return det;
+        }
+        for (let i = 0; i < arr[0].length; i++) {
+            const temp = Matrix.zeros(arr.length - 1, arr[0].length - 1).data;
+            for (let j = 1; j < arr.length; j++) {
+                this.arraycopy(arr[j], 0, temp[j - 1], 0, i);
+                this.arraycopy(arr[j], i + 1, temp[j - 1], i, arr[0].length - i - 1);
+            }
+            det += arr[0][i] * Math.pow(-1, i) * this._determinant(temp);
+        }
+        return det;
+    }
+
+    private arraycopy(source: vector, startPosOfCopy: number, target: vector, startPosOfTarget: number, len: number): void {
+        for (let i = startPosOfTarget; i < startPosOfTarget + len; i++) {
+            target[i] = source[startPosOfCopy];
+            startPosOfCopy++;
+        }
     }
 }
