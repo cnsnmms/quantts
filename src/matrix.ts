@@ -1,5 +1,6 @@
 import { Vector, vector } from './vector';
 import _ from 'lodash';
+import { Z_BUF_ERROR } from 'zlib';
 export type matrix = number[][];
 
 export class Matrix {
@@ -403,31 +404,32 @@ export class Matrix {
      * @memberof Matrix
      */
     public transpose(): Matrix {
-        var result = [];
-        for (let i = 0; i < this._colSize; i++) {
-            result.push([]);
-            for (let j = 0; j < this._rowSize; j++) {
-                result[i].push(this._data[j][i]);
-            }
-        }
-        return new Matrix(result);
+        return new Matrix(this._transpose(this._data));
     }
 
+    private _transpose(arr: matrix): matrix {
+        var result = [];
+        for (let i = 0; i < arr[0].length; i++) {
+            result.push([]);
+            for (let j = 0; j < arr.length; j++) {
+                result[i].push(arr[j][i]);
+            }
+        }
+        return result;
+    }
 
-    
-    // /**
-    //  * Calculates the inverse of the matrix.
-    //  *
-    //  * @returns {Matrix}
-    //  * @memberof Matrix
-    //  */
-    // public inverse(): Matrix {
-    //     if (!this._isSquare) {
-    //         throw 'Matrix is not square';
-    //     }
-
-    //     return new Matrix([]);
-    // }
+    /**
+     * Calculates the inverse of the matrix.
+     *
+     * @returns {Matrix}
+     * @memberof Matrix
+     */
+    public inverse(): Matrix {
+        if (!this._isSquare) {
+            throw 'Matrix is not square (invertible)';
+        }
+        return new Matrix(this._transpose(this._cofactor(this._data))).mxScMult(1.0 / this._determinant(this._data));
+    }
 
 
     /**
@@ -458,6 +460,58 @@ export class Matrix {
             det += arr[0][i] * Math.pow(-1, i) * this._determinant(temp);
         }
         return det;
+    }
+
+    public cofactor(): Matrix {
+        if (!this._isSquare) {
+            throw 'Matrix must be square for calculating the cofactor.';
+        }
+        return new Matrix(this._cofactor(this._data));
+    }
+
+    private _cofactor(arr: matrix): matrix {
+        const temp = Matrix.zeros(arr.length, arr[0].length);
+
+        for (let i = 0; i < arr.length; i++) {
+            for (let j = 0; j < arr[0].length; j++) {
+                temp.setElement(this.evenOdd(i) * this.evenOdd(j) * this._determinant(this._subMatrix(arr, i, j)), i, j);
+            }
+        }
+
+        return temp.data;
+    }
+
+    public subMatrix(rowIndex: number, colIndex: number): Matrix {
+        return new Matrix(this._subMatrix(this._data, rowIndex, colIndex));
+    }
+
+    private _subMatrix(arr: matrix, exclRow: number, exclCol: number): matrix {
+        const temp = [];
+
+        for (let i = 0; i < arr.length; i++) {
+            if (i !== exclRow) {
+                temp.push([]);
+            } else {
+                continue;
+            }
+            for (let j = 0; j < arr.length; j++) {
+                if (j !== exclCol) {
+                    temp[temp.length - 1].push(arr[i][j]);
+                } else {
+                    continue;
+                }
+            }
+        }
+
+        return temp;
+    }
+
+    private evenOdd(x: number): number {
+        if (x % 2) {
+            return -1;
+        } else {
+            return 1;
+        }
     }
 
     private arraycopy(source: vector, startPosOfCopy: number, target: vector, startPosOfTarget: number, len: number): void {
