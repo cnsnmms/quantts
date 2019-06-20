@@ -407,6 +407,7 @@ export class Matrix {
         return new Matrix(this._transpose(this._data));
     }
 
+    // Calculates the transpose
     private _transpose(arr: matrix): matrix {
         var result = [];
         for (let i = 0; i < arr[0].length; i++) {
@@ -431,7 +432,6 @@ export class Matrix {
         return new Matrix(this._transpose(this._cofactor(this._data))).mxScMult(1.0 / this._determinant(this._data));
     }
 
-
     /**
      * Calculates the determinant of the current matrix.
      *
@@ -445,6 +445,7 @@ export class Matrix {
         return this._determinant(this._data);
     }
 
+    // Calculates the determinant
     private _determinant(arr: matrix): number {
         let det = 0;
         if (arr.length == 2) {
@@ -462,6 +463,12 @@ export class Matrix {
         return det;
     }
 
+    /**
+     * Calculates the cofactor of the current matrix
+     *
+     * @returns {Matrix}
+     * @memberof Matrix
+     */
     public cofactor(): Matrix {
         if (!this._isSquare) {
             throw 'Matrix must be square for calculating the cofactor.';
@@ -469,6 +476,7 @@ export class Matrix {
         return new Matrix(this._cofactor(this._data));
     }
 
+    // Calculates the cofactor
     private _cofactor(arr: matrix): matrix {
         const temp = Matrix.zeros(arr.length, arr[0].length);
 
@@ -481,10 +489,19 @@ export class Matrix {
         return temp.data;
     }
 
+    /**
+     * Returns a sub matrix that excluded row @rowIndex and col @colIndex .
+     *
+     * @param {number} rowIndex
+     * @param {number} colIndex
+     * @returns {Matrix}
+     * @memberof Matrix
+     */
     public subMatrix(rowIndex: number, colIndex: number): Matrix {
         return new Matrix(this._subMatrix(this._data, rowIndex, colIndex));
     }
 
+    // Creates sub matrix.
     private _subMatrix(arr: matrix, exclRow: number, exclCol: number): matrix {
         const temp = [];
 
@@ -506,6 +523,7 @@ export class Matrix {
         return temp;
     }
 
+    // Neccessary helper for the cofactor.
     private evenOdd(x: number): number {
         if (x % 2) {
             return -1;
@@ -514,6 +532,7 @@ export class Matrix {
         }
     }
 
+    // Copies vector elements.
     private arraycopy(source: vector, startPosOfCopy: number, target: vector, startPosOfTarget: number, len: number): void {
         for (let i = startPosOfTarget; i < startPosOfTarget + len; i++) {
             target[i] = source[startPosOfCopy];
