@@ -1,7 +1,6 @@
 import { Vector, vector } from './vector';
 import { EigenDecomposition } from './eigen-decomposition';
 import _ from 'lodash';
-import { Z_BUF_ERROR } from 'zlib';
 export type matrix = number[][];
 
 export class Matrix {
