@@ -30,7 +30,7 @@ export class Matrix {
     private isMatrixValid(arr: matrix) {
         if (arr.length > 0) {
             for (let i = 0; i < arr.length; i++) {
-                if(arr[i].length === 0) {
+                if (arr[i].length === 0) {
                     throw `Matrix can't have empty rows.`;
                 }
                 // Check if the row is an array.
@@ -42,8 +42,8 @@ export class Matrix {
                     throw 'Column sizes are not equal in the given array.';
                 }
                 // Check if all the elements are numbers.
-                for(let j=0; j < arr[i].length; j++) {
-                    if(typeof arr[i][j] !== 'number') {
+                for (let j = 0; j < arr[i].length; j++) {
+                    if (typeof arr[i][j] !== 'number') {
                         throw 'All elements must be numbers in the initial array.';
                     }
                 }
@@ -137,9 +137,10 @@ export class Matrix {
      * @returns {matrix}
      * @memberof Matrix
      */
-    static zeros(n: number): Matrix {
+    static zeros(m: number, n?: number): Matrix {
         let result = [];
-        for (let i = 0; i < n; i++) {
+        n = n ? n : m;
+        for (let i = 0; i < m; i++) {
             result.push([]);
             for (let j = 0; j < n; j++) {
                 result[i][j] = 0;
@@ -281,6 +282,38 @@ export class Matrix {
         });
     }
 
+
+    /**
+     * Gets the element positioned at [rowIndex, colIndex]
+     *
+     * @param {number} rowIndex
+     * @param {number} colIndex
+     * @returns
+     * @memberof Matrix
+     */
+    getElement(rowIndex: number, colIndex: number): number {
+        if (rowIndex >= this._rowSize || colIndex >= this._colSize || rowIndex < 0 || colIndex < 0) {
+            throw 'Index out of bound. Please check the rowIndex and colIndex values';
+        }
+        return this._data[rowIndex][colIndex];
+    }
+
+
+    /**
+     * Sets the element positioned at [rowIndex, colIndex]
+     *
+     * @param {number} value
+     * @param {number} rowIndex
+     * @param {number} colIndex
+     * @memberof Matrix
+     */
+    setElement(value: number, rowIndex: number, colIndex: number): void {
+        if (rowIndex >= this._rowSize || colIndex >= this._colSize || rowIndex < 0 || colIndex < 0) {
+            throw 'Index out of bound. Please check the rowIndex and colIndex values';
+        }
+        this._data[rowIndex][colIndex] = value;
+    }
+
     /**
      * Gets the diagonal elements of the current matrix. The matrix must be square for this operation.
      *  
@@ -357,6 +390,23 @@ export class Matrix {
             result.push([]);
             for (let j = 0; j < this._colSize; j++) {
                 result[i].push(this._data[i][j] * sc);
+            }
+        }
+        return new Matrix(result);
+    }
+
+    /**
+     * Calculates the transpose of the current matrix and returns a new matrix object.
+     *
+     * @returns {Matrix}
+     * @memberof Matrix
+     */
+    public transpose(): Matrix {
+        var result = [];
+        for (let i = 0; i < this._colSize; i++) {
+            result.push([]);
+            for (let j = 0; j < this._rowSize; j++) {
+                result[i].push(this._data[j][i]);
             }
         }
         return new Matrix(result);

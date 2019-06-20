@@ -80,4 +80,51 @@ export class Vector {
         }
         return new Vector(result);
     }
+
+
+    /**
+     * Creates zeros vector with length of m
+     *  
+     * @static
+     * @param {number} m number of elements
+     * @returns {Vector}
+     * @memberof Vector
+     */
+    static zeros(m: number): Vector {
+        let result = [];
+        for (let i = 0; i < m; i++) {
+            result.push(0);
+        }
+        return new Vector(result);
+    }
+
+
+    /**
+     * Gets element positioned @index
+     *
+     * @param {number} index
+     * @returns {number}
+     * @memberof Vector
+     */
+    getElement(index: number): number {
+        if (index > this._length || index < 0) {
+            throw 'Index out of bound.';
+        }
+        return this._data[index];
+    }
+
+
+    /**
+     * Sets element positioned @index
+     *
+     * @param {number} value
+     * @param {number} index
+     * @memberof Vector
+     */
+    setElement(value: number, index: number): void {
+        if (index > this._length || index < 0) {
+            throw 'Index out of bound.';
+        }
+        this._data[index] = value;
+    }
 }
