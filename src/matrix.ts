@@ -1,13 +1,14 @@
 import { Vector, vector } from './vector';
+import { EigenDecomposition } from './eigen-decomposition';
 import _ from 'lodash';
 import { Z_BUF_ERROR } from 'zlib';
 export type matrix = number[][];
 
 export class Matrix {
 
-    private _rowSize: number;
-    private _colSize: number;
-    private _isSquare: boolean;
+    protected _rowSize: number;
+    protected _colSize: number;
+    protected _isSquare: boolean;
     public readonly className: string = 'matrix';
 
     /**
@@ -16,12 +17,12 @@ export class Matrix {
      * @param {matrix} _data Initial values for the instance. This parameter must be given at the instantiation.
      * @memberof Matrix
      */
-    constructor(private _data: matrix) {
+    constructor(protected _data: matrix) {
         this._init(_data);
     }
 
     // Initialization function
-    private _init(initData: matrix) {
+    protected _init(initData: matrix) {
         this.isMatrixValid(initData);
         this._rowSize = initData.length;
         this._colSize = initData[0].length;
@@ -29,7 +30,7 @@ export class Matrix {
     }
 
     // Checks whether the given array data is a valid matrix or not.
-    private isMatrixValid(arr: matrix) {
+    protected isMatrixValid(arr: matrix) {
         if (arr.length > 0) {
             for (let i = 0; i < arr.length; i++) {
                 if (arr[i].length === 0) {
@@ -408,7 +409,7 @@ export class Matrix {
     }
 
     // Calculates the transpose
-    private _transpose(arr: matrix): matrix {
+    protected _transpose(arr: matrix): matrix {
         var result = [];
         for (let i = 0; i < arr[0].length; i++) {
             result.push([]);
@@ -446,7 +447,7 @@ export class Matrix {
     }
 
     // Calculates the determinant
-    private _determinant(arr: matrix): number {
+    protected _determinant(arr: matrix): number {
         let det = 0;
         if (arr.length == 2) {
             det = arr[0][0] * arr[1][1] - arr[0][1] * arr[1][0];
@@ -477,7 +478,7 @@ export class Matrix {
     }
 
     // Calculates the cofactor
-    private _cofactor(arr: matrix): matrix {
+    protected _cofactor(arr: matrix): matrix {
         const temp = Matrix.zeros(arr.length, arr[0].length);
 
         for (let i = 0; i < arr.length; i++) {
@@ -502,7 +503,7 @@ export class Matrix {
     }
 
     // Creates sub matrix.
-    private _subMatrix(arr: matrix, exclRow: number, exclCol: number): matrix {
+    protected _subMatrix(arr: matrix, exclRow: number, exclCol: number): matrix {
         const temp = [];
 
         for (let i = 0; i < arr.length; i++) {
@@ -524,7 +525,7 @@ export class Matrix {
     }
 
     // Neccessary helper for the cofactor.
-    private evenOdd(x: number): number {
+    protected evenOdd(x: number): number {
         if (x % 2) {
             return -1;
         } else {
@@ -533,7 +534,7 @@ export class Matrix {
     }
 
     // Copies vector elements.
-    private arraycopy(source: vector, startPosOfCopy: number, target: vector, startPosOfTarget: number, len: number): void {
+    protected arraycopy(source: vector, startPosOfCopy: number, target: vector, startPosOfTarget: number, len: number): void {
         for (let i = startPosOfTarget; i < startPosOfTarget + len; i++) {
             target[i] = source[startPosOfCopy];
             startPosOfCopy++;

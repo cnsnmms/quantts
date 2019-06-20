@@ -68,3 +68,5 @@ import MersenneTwister from 'mersenne-twister';
 // const a = new Matrix([[3,2,9],[1,4,5],[7,12,21]]);
 // console.log(a.determinant());
 // console.log(a.inverse());
+
+const a = new Matrix()
